@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OFFICINA SONORA — sequencer e fabbrica di moduli audio</title>
+  <link rel="stylesheet" href="css/korg.css">
+</head>
+
+<body>
+  <div class="salotto">
+    <div class="chassis">
+      <i class="vite v1"></i><i class="vite v2"></i><i class="vite v3"></i><i class="vite v4"></i>
+
+      <div class="barra">
+        <div class="targa">
+          <div class="marchio">OFFICINA SONORA</div>
+          <div class="modello">SEQUENCER PER IL GIOCO</div>
+          <div class="tacca">MODULO AUDIO PER IL GIOCO</div>
+        </div>
+
+        <div class="trasporto">
+          <button id="btnAudio" class="bottone led" title="Sblocca l'audio del browser">Audio</button>
+          <button id="btnPlay" class="bottone grande arancia play">Play</button>
+          <button id="btnStop" class="bottone grande stop">Stop</button>
+          <button id="btnTap" class="bottone mini" title="Batti il tempo">Tap</button>
+        </div>
+
+        <div class="lcd">
+          <div class="lcd-riga">
+            <span class="lcd-campo arancione" id="lcdPat">PAT A</span>
+            <span class="lcd-campo verde" id="lcdCatena">A</span>
+            <span class="lcd-campo grande" id="lcdBpm">112</span>
+            <span class="lcd-campo" id="lcdSw">SW 12%</span>
+            <span class="lcd-campo" id="lcdLun">16</span>
+            <span class="lcd-campo tacito" id="lcdPasso">--</span>
+            <span class="lcd-campo tacito" id="lcdInfo">PRONTO</span>
+          </div>
+          <div class="lcd-nome" id="lcdNome">nessun progetto</div>
+        </div>
+
+        <div class="mani">
+          <div class="slot" id="slotBpm"></div>
+          <div class="slot" id="slotSwing"></div>
+          <div class="slot" id="slotVol"></div>
+        </div>
+      </div>
+
+      <nav class="linguette">
+        <button class="linguetta attiva" data-sez="sezSeq">Sequencer</button>
+        <button class="linguetta" data-sez="sezVoce">Voce</button>
+        <button class="linguetta" data-sez="sezCodice">Codice</button>
+      </nav>
+
+      <section id="sezSeq" class="sezione attiva griglia-sez">
+        <div class="utili">
+          <span class="etichetta-utile">Pattern</span>
+          <div class="catena" id="patScelte"></div>
+          <span class="sep"></span>
+          <span class="etichetta-utile">Catena</span>
+          <div class="catena" id="catenaScelte"></div>
+          <button id="btnCatenaPiu" class="bottone mini">+ attacca</button>
+          <button id="btnCatenaVia" class="bottone mini">− togli</button>
+          <span class="sep"></span>
+          <button id="btnMetro" class="bottone mini led verde">Metrono</button>
+          <span class="sep"></span>
+          <span class="etichetta-utile">Groove</span>
+          <select id="selGroove" class="sel-modello">
+            <option value="">scegli…</option>
+            <option value="quattro">quattro sul due</option>
+            <option value="break">break</option>
+            <option value="boogie">boogie</option>
+            <option value="bossa">bossa</option>
+          </select>
+          <span class="sep"></span>
+          <span class="etichetta-utile">Musica</span>
+          <select id="selMusica" class="sel-modello">
+            <option value="">spenta</option>
+            <option value="partita">partita</option>
+            <option value="pericolo">pericolo</option>
+            <option value="cantina">cantina</option>
+          </select>
+          <span class="sep"></span>
+          <button id="btnPulisci" class="bottone mini">azzera</button>
+          <button id="btnCopiaPat" class="bottone mini">copia</button>
+          <button id="btnIncollaPat" class="bottone mini">incolla</button>
+          <button id="btnCasuale" class="bottone mini">a caso</button>
+          <button id="btnRaddoppia" class="bottone mini">◀ sposta</button>
+          <button id="btnChiudi" class="bottone mini">chiusura ▶</button>
+          <button id="btnVia" class="bottone mini">− forza</button>
+        </div>
+        <div id="hostSeq"></div>
+      </section>
+
+      <section id="sezVoce" class="sezione voce-sez">
+        <div id="hostVoce" style="display:contents"></div>
+      </section>
+
+      <section id="sezCodice" class="sezione codice-sez">
+        <div class="opzioni">
+          <span class="etichetta-op">Nome globale</span>
+          <input id="optNome" class="campo-stretto" value="A" maxlength="16">
+          <span class="etichetta-op">Riverbero</span>
+          <input id="optRiverbero" class="campo-stretto" type="number" min="0.2" max="6" step="0.1" value="1.9">
+          <label class="casella"><input type="checkbox" id="optScript" checked> racchiude in &lt;script&gt;</label>
+          <label class="casella"><input type="checkbox" id="optCommenti" checked> commenti</label>
+          <label class="casella"><input type="checkbox" id="optJson" checked> dati per reimportare</label>
+          <label class="casella"><input type="checkbox" id="optEffetti" checked> effetti del gioco</label>
+          <label class="casella"><input type="checkbox" id="optMusica" checked> musica</label>
+          <label class="casella"><input type="checkbox" id="optSequencer" checked> sequencer</label>
+          <span class="sep"></span>
+          <button id="btnGenera" class="bottone arancia">Genera</button>
+          <button id="btnCopia" class="bottone">Copia</button>
+          <button id="btnScarica" class="bottone">Scarica .js</button>
+          <button id="btnCarica" class="bottone" title="Usa il codice scritto qui, non quello generato">Carica e prova</button>
+          <button id="btnImporta" class="bottone">Importa da codice</button>
+          <span class="sep"></span>
+          <button id="btnNuovo" class="bottone mini">Nuovo</button>
+          <button id="btnApri" class="bottone mini">Apri .json</button>
+          <button id="btnApriJs" class="bottone mini">Apri .js</button>
+          <button id="btnSalva" class="bottone mini">Salva .json</button>
+        </div>
+        <div class="editor" id="editor"></div>
+        <div class="console" id="console"></div>
+      </section>
+
+      <div class="pieduccio">
+        <span id="stato" class="stato">pronto</span>
+        <span id="campione">audio: —</span>
+        <span id="viste">16 voci · 16 passi</span>
+        <span class="spazio"></span>
+        <span><kbd>spazio</kbd> play · <kbd>1-4</kbd> pattern · <kbd>ctrl</kbd>+<kbd>s</kbd> scarica</span>
+      </div>
+    </div>
+
+    <div class="suggerimento">
+      <span><b>clic</b> sul pad accende e raddoppia la velocità</span>
+      <span><b>clic destro</b> lo spegne</span>
+      <span><b>trascina</b> sui pad per dipingere</span>
+      <span><b>mayusc+clic</b> accento</span>
+      <span><b>clic</b> sul numero imposta la lunghezza</span>
+      <span><b>doppio clic</b> su una manopola = valore di fabbrica</span>
+    </div>
+  </div>
+
+  <input type="file" id="fileIn" hidden accept=".json,.js,application/json,text/javascript">
+
+  <script src="js/stato.js"></script>
+  <script src="js/generatore.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/pannello.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
